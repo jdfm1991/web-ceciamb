@@ -5,11 +5,24 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
+        // Administrador de prueba
+        User::updateOrCreate(
+            ['email' => 'admin@clinica.com'],
+            [
+                'name' => 'Administrador Ceciamb',
+                'password' => Hash::make('20975144'),
+                'role' => 'admin',
+                'email_verified_at' => now(),
+                'activation_token' => null,
+                'activation_expires_at' => null,
+            ]
+        );
         // Recepcionista de prueba
         User::updateOrCreate(
             ['email' => 'recepcion@ceciamb.test'],
@@ -43,7 +56,7 @@ class UserSeeder extends Seeder
                 'name' => 'Paciente No Activado',
                 'password' => Hash::make('password'),
                 'role' => 'paciente',
-                'activation_token' => \Illuminate\Support\Str::random(64),
+                'activation_token' => Str::random(64),
                 'activation_expires_at' => now()->subHours(2),
             ]
         );
