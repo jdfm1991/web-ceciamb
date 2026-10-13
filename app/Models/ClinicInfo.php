@@ -36,4 +36,17 @@ class ClinicInfo extends Model
             ->where('key', $key)
             ->value('value') ?? $default;
     }
+
+    public static function getLogoUrl(): string
+    {
+        $logo = static::getValue('logo', 'images/logo.png');
+
+        // Si el logo está en el disco public (storage), usar /storage/
+        if (str_starts_with($logo, 'clinic/')) {
+            return asset('storage/' . $logo);
+        }
+
+        // Si es el logo antiguo en public/images/, usar directamente
+        return asset($logo);
+    }
 }
