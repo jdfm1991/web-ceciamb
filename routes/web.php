@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Public\HomeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -12,3 +13,5 @@ Route::get('/', function () {
         'message' => 'El portal digital está en construcción.',
     ]);
 });
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
