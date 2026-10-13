@@ -54,4 +54,9 @@ class AppointmentStatusChart extends ChartWidget
     {
         return 'doughnut';
     }
+
+    public static function canView(): bool
+    {
+        return in_array(auth()->user()?->role, ['admin', 'recepcionista'], true);
+    }
 }

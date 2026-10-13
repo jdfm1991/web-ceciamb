@@ -64,4 +64,20 @@ class AppointmentResource extends Resource
     {
         return false;
     }
+
+
+    public static function canViewAny(): bool
+    {
+        return in_array(auth()->user()?->role, ['admin', 'recepcionista'], true);
+    }
+
+    public static function canEdit($record): bool
+    {
+        return in_array(auth()->user()?->role, ['admin', 'recepcionista'], true);
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()?->isAdmin() && $record->status === 'pendiente';
+    }
 }

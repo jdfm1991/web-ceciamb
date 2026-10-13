@@ -51,13 +51,18 @@ class UpcomingAppointmentsWidget extends TableWidget
                 TextColumn::make('status')
                     ->label('Estado')
                     ->badge()
-                    ->formatStateUsing(fn (string $state): string => Appointment::STATUSES[$state] ?? $state)
-                    ->color(fn (string $state): string => match ($state) {
+                    ->formatStateUsing(fn(string $state): string => Appointment::STATUSES[$state] ?? $state)
+                    ->color(fn(string $state): string => match ($state) {
                         'pendiente' => 'warning',
                         'confirmada' => 'success',
                         default => 'gray',
                     }),
             ])
             ->paginated(false);
+    }
+
+    public static function canView(): bool
+    {
+        return in_array(auth()->user()?->role, ['admin', 'recepcionista'], true);
     }
 }

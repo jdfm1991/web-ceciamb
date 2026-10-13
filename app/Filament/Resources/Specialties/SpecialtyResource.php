@@ -48,4 +48,24 @@ class SpecialtyResource extends Resource
             'edit' => EditSpecialty::route('/{record}/edit'),
         ];
     }
+
+    public static function canViewAny(): bool
+    {
+        return in_array(auth()->user()?->role, ['admin', 'recepcionista'], true);
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->isAdmin() ?? false;
+    }
+
+    public static function canEdit($record): bool
+    {
+        return auth()->user()?->isAdmin() ?? false;
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()?->isAdmin() ?? false;
+    }
 }

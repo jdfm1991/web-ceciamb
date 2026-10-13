@@ -184,4 +184,14 @@ class ManageClinicInfo extends Page
 
         $this->form->fill(ClinicInfo::allAsArray());
     }
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->isAdmin() ?? false;
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->isAdmin() ?? false;
+    }
 }
