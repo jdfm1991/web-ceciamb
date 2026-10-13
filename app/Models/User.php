@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -102,8 +103,8 @@ class User extends Authenticatable
     /**
      * Relación con citas (se usará en Sub-fase 2.7).
      */
-    // public function appointments(): HasMany
-    // {
-    //     return $this->hasMany(Appointment::class);
-    // }
+    public function appointments(): HasMany
+    {
+        return $this->hasMany(Appointment::class);
+    }
 }
