@@ -24,6 +24,7 @@ class Appointment extends Model
         'status',
         'parent_appointment_id',
         'expires_at',
+        'internal_notes',
     ];
 
     protected $casts = [
