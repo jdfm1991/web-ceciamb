@@ -20,6 +20,10 @@ class SpecialtyForm
                     ->label('Nombre')
                     ->required()
                     ->maxLength(255)
+                    ->unique(ignoreRecord: true)
+                    ->validationMessages([
+                        'unique' => 'Ya existe una especialidad con este nombre. Por favor, elige otro.',
+                    ])
                     ->live(onBlur: true)
                     ->afterStateUpdated(function (string $operation, $state, callable $set) {
                         if ($operation === 'create') {

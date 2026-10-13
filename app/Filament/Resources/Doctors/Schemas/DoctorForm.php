@@ -24,9 +24,17 @@ class DoctorForm
                             ->required()
                             ->maxLength(255)
                             ->live(onBlur: true)
-                            ->afterStateUpdated(function (string $operation, $state, callable $set) {
+                            ->afterStateUpdated(function (string $operation, $state, callable $set, callable $get) {
                                 if ($operation === 'create') {
-                                    $set('slug', Str::slug($state));
+                                    $baseSlug = Str::slug($state);
+                                    $slug = $baseSlug;
+                                    $counter = 1;
+                                    // Verifica si el slug existe y añade sufijo
+                                    while (\App\Models\Doctor::where('slug', $slug)->exists()) {
+                                        $slug = $baseSlug . '-' . $counter;
+                                        $counter++;
+                                    }
+                                    $set('slug', $slug);
                                 }
                             }),
 
