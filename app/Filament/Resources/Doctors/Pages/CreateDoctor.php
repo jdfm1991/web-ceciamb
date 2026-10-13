@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Filament\Resources\Doctors\Pages;
+
+use App\Filament\Resources\Doctors\DoctorResource;
+use Filament\Resources\Pages\CreateRecord;
+
+class CreateDoctor extends CreateRecord
+{
+    protected static string $resource = DoctorResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
+    protected function getFormActions(): array
+    {
+        return [
+            $this->getCreateFormAction()
+                ->label('Crear'),
+
+            $this->getCancelFormAction()
+                ->label('Cancelar'),
+        ];
+    }
+}
