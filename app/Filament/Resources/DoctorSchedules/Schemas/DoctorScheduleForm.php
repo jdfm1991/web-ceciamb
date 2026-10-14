@@ -35,10 +35,7 @@ class DoctorScheduleForm
                             ->label('Hora de inicio')
                             ->required()
                             ->seconds(false)
-                            ->minutesStep(15)
-                            ->rules([
-                                fn($record) => (new NoScheduleOverlap())->ignore($record?->id ?? 0),
-                            ]),
+                            ->minutesStep(15),
 
                         TimePicker::make('end_time')
                             ->label('Hora de fin')
