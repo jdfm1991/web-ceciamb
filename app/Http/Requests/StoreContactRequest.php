@@ -15,7 +15,7 @@ class StoreContactRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'min:3', 'max:100'],
-            'email' => ['required', 'email:rfc,dns', 'max:150'],
+            'email' => ['required', 'email:rfc', 'max:150'],
             'phone' => ['nullable', 'string', 'regex:/^[0-9+\-\s()]{7,20}$/'],
             'subject' => ['required', 'string', 'min:3', 'max:150'],
             'message' => ['required', 'string', 'min:10', 'max:2000'],

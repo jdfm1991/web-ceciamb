@@ -46,8 +46,6 @@ class DoctorScheduleObserver
 
         $overlap = $query->first();
 
-        \Log::info('Overlap: ' . $overlap);
-
         if ($overlap) {
             throw ValidationException::withMessages([
                 'start_time' => sprintf(

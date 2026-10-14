@@ -30,6 +30,7 @@ class User extends Authenticatable implements FilamentUser
         'role',
         'activation_token',
         'activation_expires_at',
+        'email_verified_at',
     ];
 
     protected $hidden = [

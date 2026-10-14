@@ -30,24 +30,38 @@ class PatientAuthController extends Controller
      */
     public function register(RegisterPatientRequest $request): RedirectResponse
     {
+        \Log::info('=== Registro iniciado ===');
+        \Log::info('Datos validados:', $request->validated());
+
         $validated = $request->validated();
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
-            'password' => Hash::make($validated['password']),
-            'role' => 'paciente',
-            'activation_token' => Str::random(64),
-            'activation_expires_at' => now()->addHours(48),
-            'email_verified_at' => null,
-        ]);
+        try {
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? null,
+                'password' => Hash::make($validated['password']),
+                'role' => 'paciente',
+                'activation_token' => Str::random(64),
+                'activation_expires_at' => now()->addHours(48),
+                'email_verified_at' => null,
+            ]);
 
-        $this->sendActivationEmail($user);
+            \Log::info('Usuario creado:', ['id' => $user->id, 'email' => $user->email]);
 
-        return redirect()
-            ->route('activation.pending', ['email' => $user->email])
-            ->with('success', 'Tu cuenta fue creada. Revisa tu correo para activarla.');
+            $this->sendActivationEmail($user);
+
+            \Log::info('Correo enviado');
+
+            return redirect()
+                ->route('activation.pending', ['email' => $user->email])
+                ->with('success', 'Tu cuenta fue creada. Revisa tu correo para activarla.');
+        } catch (\Throwable $e) {
+            \Log::error('Error en registro: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
+            throw $e;
+        }
     }
 
     /**

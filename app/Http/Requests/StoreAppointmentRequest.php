@@ -21,7 +21,7 @@ class StoreAppointmentRequest extends FormRequest
     {
         return [
             'patient_name' => ['required', 'string', 'min:3', 'max:100'],
-            'patient_email' => ['required', 'email:rfc,dns', 'max:150'],
+            'patient_email' => ['required', 'email:rfc', 'max:150'],
             'patient_phone' => ['required', 'string', 'regex:/^[0-9+\-\s()]{7,20}$/'],
             'doctor_id' => ['nullable', 'integer', 'exists:doctors,id'],
             'specialty_id' => ['nullable', 'integer', 'exists:specialties,id'],

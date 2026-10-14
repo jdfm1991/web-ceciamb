@@ -16,7 +16,7 @@ class RegisterPatientRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'min:3', 'max:100'],
-            'email' => ['required', 'email:rfc,dns', 'max:150', 'unique:users,email'],
+            'email' => ['required', 'email:rfc', 'max:150', 'unique:users,email'],
             'phone' => ['nullable', 'string', 'regex:/^[0-9+\-\s()]{7,20}$/'],
             'password' => ['required', 'confirmed', Password::min(8)->letters()->numbers()],
         ];
