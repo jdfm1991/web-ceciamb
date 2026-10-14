@@ -37,8 +37,10 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         return array_merge(parent::share($request), [
-            'clinicInfo' => ClinicInfo::allAsArray(),
-            ['logoUrl' => ClinicInfo::getLogoUrl()],
+            'clinicInfo' => array_merge(
+                ClinicInfo::allAsArray(),
+                ['logoUrl' => ClinicInfo::getLogoUrl()]
+            ),
             'auth' => [
                 'user' => $request->user() ? [
                     'id' => $request->user()->id,
@@ -46,6 +48,10 @@ class HandleInertiaRequests extends Middleware
                     'email' => $request->user()->email,
                     'role' => $request->user()->role,
                 ] : null,
+            ],
+            'flash' => [
+                'success' => fn() => $request->session()->get('success'),
+                'error' => fn() => $request->session()->get('error'),
             ],
         ]);
     }
