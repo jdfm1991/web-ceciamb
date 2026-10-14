@@ -30,10 +30,10 @@ class ReleaseExpiredAppointments extends Command
         }
 
         foreach ($expiredAppointments as $appointment) {
-            $appointment->update([
-                'status' => 'cancelada',
-                'expires_at' => null,
-            ]);
+            // saveQuietly() no dispara eventos del Observer
+            $appointment->status = 'cancelada';
+            $appointment->expires_at = null;
+            $appointment->saveQuietly();
 
             $this->line("  → Cita #{$appointment->id} ({$appointment->patient_name}) liberada.");
         }

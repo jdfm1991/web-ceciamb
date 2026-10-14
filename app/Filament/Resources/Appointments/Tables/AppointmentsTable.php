@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Appointments\Tables;
 
+use App\Mail\AppointmentRescheduledMail;
 use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\Specialty;
@@ -19,6 +20,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Mail;
 
 class AppointmentsTable
 {
@@ -62,8 +64,8 @@ class AppointmentsTable
                 TextColumn::make('status')
                     ->label('Estado')
                     ->badge()
-                    ->formatStateUsing(fn (string $state): string => Appointment::STATUSES[$state] ?? $state)
-                    ->color(fn (string $state): string => match ($state) {
+                    ->formatStateUsing(fn(string $state): string => Appointment::STATUSES[$state] ?? $state)
+                    ->color(fn(string $state): string => match ($state) {
                         'pendiente' => 'warning',
                         'confirmada' => 'success',
                         'cancelada' => 'danger',
@@ -78,7 +80,7 @@ class AppointmentsTable
                     ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
-                    ->color(fn ($record) => $record?->isExpired() ? 'danger' : null),
+                    ->color(fn($record) => $record?->isExpired() ? 'danger' : null),
 
                 TextColumn::make('created_at')
                     ->label('Solicitada')
@@ -116,11 +118,11 @@ class AppointmentsTable
                         return $query
                             ->when(
                                 $data['from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('requested_date', '>=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('requested_date', '>=', $date),
                             )
                             ->when(
                                 $data['until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('requested_date', '<=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('requested_date', '<=', $date),
                             );
                     }),
             ])
@@ -134,7 +136,7 @@ class AppointmentsTable
                     ->requiresConfirmation()
                     ->modalHeading('Confirmar cita')
                     ->modalDescription('¿Confirmas esta cita? El paciente recibirá una notificación si el sistema de correos está configurado.')
-                    ->visible(fn (Appointment $record): bool => $record->canTransitionTo('confirmada'))
+                    ->visible(fn(Appointment $record): bool => $record->canTransitionTo('confirmada'))
                     ->action(function (Appointment $record): void {
                         $record->update([
                             'status' => 'confirmada',
@@ -154,7 +156,7 @@ class AppointmentsTable
                     ->requiresConfirmation()
                     ->modalHeading('Cancelar cita')
                     ->modalDescription('¿Cancelas esta cita? El paciente deberá enviar una nueva solicitud.')
-                    ->visible(fn (Appointment $record): bool => $record->canTransitionTo('cancelada'))
+                    ->visible(fn(Appointment $record): bool => $record->canTransitionTo('cancelada'))
                     ->action(function (Appointment $record): void {
                         $record->update([
                             'status' => 'cancelada',
@@ -174,7 +176,7 @@ class AppointmentsTable
                     ->requiresConfirmation()
                     ->modalHeading('Marcar como completada')
                     ->modalDescription('¿Marcas esta cita como completada? El paciente ya fue atendido.')
-                    ->visible(fn (Appointment $record): bool => $record->canTransitionTo('completada'))
+                    ->visible(fn(Appointment $record): bool => $record->canTransitionTo('completada'))
                     ->action(function (Appointment $record): void {
                         $record->update(['status' => 'completada']);
 
@@ -191,7 +193,7 @@ class AppointmentsTable
                     ->requiresConfirmation()
                     ->modalHeading('Marcar como no asistió')
                     ->modalDescription('¿El paciente no asistió a la cita?')
-                    ->visible(fn (Appointment $record): bool => $record->canTransitionTo('no_asistio'))
+                    ->visible(fn(Appointment $record): bool => $record->canTransitionTo('no_asistio'))
                     ->action(function (Appointment $record): void {
                         $record->update(['status' => 'no_asistio']);
 
@@ -207,19 +209,19 @@ class AppointmentsTable
                     ->color('primary')
                     ->modalHeading('Reagendar cita')
                     ->modalDescription('Crea una nueva solicitud vinculada a esta. La cita original quedará con su estado actual.')
-                    ->visible(fn (Appointment $record): bool => in_array($record->status, ['cancelada', 'no_asistio']))
+                    ->visible(fn(Appointment $record): bool => in_array($record->status, ['cancelada', 'no_asistio']))
                     ->form([
                         Select::make('specialty_id')
                             ->label('Especialidad')
-                            ->options(fn () => Specialty::active()->pluck('name', 'id'))
+                            ->options(fn() => Specialty::active()->pluck('name', 'id'))
                             ->searchable()
-                            ->default(fn (Appointment $record) => $record->specialty_id),
+                            ->default(fn(Appointment $record) => $record->specialty_id),
 
                         Select::make('doctor_id')
                             ->label('Médico')
-                            ->options(fn () => Doctor::active()->pluck('name', 'id'))
+                            ->options(fn() => Doctor::active()->pluck('name', 'id'))
                             ->searchable()
-                            ->default(fn (Appointment $record) => $record->doctor_id),
+                            ->default(fn(Appointment $record) => $record->doctor_id),
 
                         DatePicker::make('requested_date')
                             ->label('Nueva fecha')
@@ -248,6 +250,14 @@ class AppointmentsTable
                             'expires_at' => now()->addHours(24),
                         ]);
 
+                        try {
+                            Mail::to($newAppointment->patient_email)->send(
+                                new AppointmentRescheduledMail($newAppointment, $record)
+                            );
+                        } catch (\Throwable $e) {
+                            report($e);
+                        }
+
                         Notification::make()
                             ->title('Cita reagendada')
                             ->body("Se creó una nueva solicitud para el {$data['requested_date']} a las {$data['requested_time']}.")
@@ -256,7 +266,7 @@ class AppointmentsTable
                     }),
 
                 DeleteAction::make()
-                    ->visible(fn (Appointment $record): bool => $record->status === 'pendiente'),
+                    ->visible(fn(Appointment $record): bool => $record->status === 'pendiente'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
