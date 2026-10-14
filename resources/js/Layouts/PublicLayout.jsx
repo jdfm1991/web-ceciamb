@@ -13,6 +13,7 @@ export default function PublicLayout({ children }) {
         { name: 'Especialidades', href: '/especialidades' },
         { name: 'Médicos', href: '/medicos' },
         { name: 'Servicios', href: '/servicios' },
+        { name: 'Sobre Nosotros', href: '/sobre-nosotros' },
         { name: 'Contacto', href: '/contacto' },
     ];
 
@@ -155,8 +156,8 @@ export default function PublicLayout({ children }) {
                                         <Link
                                             href="/mi-cuenta"
                                             className={`flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-colors ${currentPath === '/mi-cuenta'
-                                                    ? 'bg-primary-50 text-primary-700'
-                                                    : 'text-gray-700 hover:bg-gray-50'
+                                                ? 'bg-primary-50 text-primary-700'
+                                                : 'text-gray-700 hover:bg-gray-50'
                                                 }`}
                                         >
                                             <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -167,8 +168,8 @@ export default function PublicLayout({ children }) {
                                         <Link
                                             href="/mi-cuenta/citas"
                                             className={`flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-colors ${currentPath.startsWith('/mi-cuenta/citas')
-                                                    ? 'bg-primary-50 text-primary-700'
-                                                    : 'text-gray-700 hover:bg-gray-50'
+                                                ? 'bg-primary-50 text-primary-700'
+                                                : 'text-gray-700 hover:bg-gray-50'
                                                 }`}
                                         >
                                             <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -179,8 +180,8 @@ export default function PublicLayout({ children }) {
                                         <Link
                                             href="/mi-cuenta/perfil"
                                             className={`flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-colors ${currentPath.startsWith('/mi-cuenta/perfil')
-                                                    ? 'bg-primary-50 text-primary-700'
-                                                    : 'text-gray-700 hover:bg-gray-50'
+                                                ? 'bg-primary-50 text-primary-700'
+                                                : 'text-gray-700 hover:bg-gray-50'
                                                 }`}
                                         >
                                             <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

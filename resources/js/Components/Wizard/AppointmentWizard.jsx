@@ -19,6 +19,8 @@ export default function AppointmentWizard({ specialties, preselectedDoctor }) {
         patient_phone: '',
         message: '',
     });
+    // NUEVO: Estado para guardar los médicos cargados
+    const [availableDoctors, setAvailableDoctors] = useState([]);
 
     const updateFormData = (newData) => {
         setFormData((prev) => ({ ...prev, ...newData }));
@@ -45,10 +47,18 @@ export default function AppointmentWizard({ specialties, preselectedDoctor }) {
 
     const getDoctorName = () => {
         if (!formData.doctor_id) return null;
+
+        // 1. Si es el preseleccionado, usar sus datos
         if (preselectedDoctor && formData.doctor_id === preselectedDoctor.id) {
             return preselectedDoctor.name;
         }
-        return null; // Se resolverá desde el backend al confirmar
+
+        // 2. Buscar en la lista de médicos cargados
+        const doctor = availableDoctors.find((d) => d.id === formData.doctor_id);
+        if (doctor) return doctor.name;
+
+        // 3. Fallback
+        return null;
     };
 
     return (
@@ -62,6 +72,7 @@ export default function AppointmentWizard({ specialties, preselectedDoctor }) {
                         formData={formData}
                         onNext={nextStep}
                         preselectedDoctor={preselectedDoctor}
+                        onDoctorsLoaded={setAvailableDoctors} // NUEVO
                     />
                 )}
 

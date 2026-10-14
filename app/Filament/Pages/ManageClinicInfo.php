@@ -176,6 +176,8 @@ class ManageClinicInfo extends Page
             );
         }
 
+        ClinicInfo::clearCache();
+
         Notification::make()
             ->title('Información actualizada')
             ->body('Los cambios se reflejarán en el portal público inmediatamente.')

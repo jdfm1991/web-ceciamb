@@ -23,8 +23,10 @@ export default function DoctorsIndex({ doctors, activeSpecialty }) {
 
     return (
         <PublicLayout>
-            <Head title={activeSpecialty ? `Médicos - ${activeSpecialty.name}` : 'Directorio Médico'} />
-
+            <Head>
+                <title>{activeSpecialty ? `Médicos de ${activeSpecialty.name}` : 'Directorio Médico'}</title>
+                <meta name="description" content="Hospital de Clínicas de Ceciamb - Atención médica de calidad con sensibilidad humana. Agenda tu cita con nuestros especialistas." />
+            </Head>
             {/* Header */}
             <section className="bg-gradient-to-br from-primary-700 to-primary-500 text-white py-16">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

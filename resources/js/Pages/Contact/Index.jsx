@@ -26,14 +26,15 @@ export default function ContactIndex() {
     };
 
     const inputClass = (field) =>
-        `w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all ${
-            errors[field] ? 'border-red-500 bg-red-50' : 'border-gray-300'
+        `w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all ${errors[field] ? 'border-red-500 bg-red-50' : 'border-gray-300'
         }`;
 
     return (
         <PublicLayout>
-            <Head title="Contacto" />
-
+            <Head>
+                <title>Contacto</title>
+                <meta name="description" content="Hospital de Clínicas de Ceciamb - Atención médica de calidad con sensibilidad humana. Agenda tu cita con nuestros especialistas." />
+            </Head>
             {/* Header */}
             <section className="bg-gradient-to-br from-primary-700 to-primary-500 text-white py-16">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

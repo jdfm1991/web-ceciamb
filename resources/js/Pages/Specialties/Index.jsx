@@ -23,7 +23,10 @@ export default function SpecialtiesIndex({ specialties, categories }) {
 
     return (
         <PublicLayout>
-            <Head title="Especialidades" />
+            <Head>
+                <title>Especialidades</title>
+                <meta name="description" content="Hospital de Clínicas de Ceciamb - Atención médica de calidad con sensibilidad humana. Agenda tu cita con nuestros especialistas." />
+            </Head>
 
             {/* Header de la página */}
             <section className="bg-gradient-to-br from-primary-700 to-primary-500 text-white py-16">

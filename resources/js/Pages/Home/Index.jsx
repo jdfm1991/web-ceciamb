@@ -8,8 +8,10 @@ import DoctorCard from '@/Components/DoctorCard';
 export default function Home({ services, specialties, doctors }) {
     return (
         <PublicLayout>
-            <Head title="Inicio" />
-
+            <Head>
+                <title>Hospital de Clínicas de Ceciamb</title>
+                <meta name="description" content="Hospital de Clínicas de Ceciamb - Atención médica de calidad con sensibilidad humana. Agenda tu cita con nuestros especialistas." />
+            </Head>
             {/* Sección Hero */}
             <section className="relative bg-gradient-to-br from-primary-700 via-primary-600 to-primary-500 text-white overflow-hidden">
                 <div className="absolute inset-0 bg-[url('/images/pattern.svg')] opacity-10" />

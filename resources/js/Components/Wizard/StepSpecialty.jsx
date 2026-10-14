@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export default function StepSpecialty({ specialties, formData, onNext, preselectedDoctor }) {
+export default function StepSpecialty({ specialties, formData, onNext, preselectedDoctor, onDoctorsLoaded }) {
     const [selectedSpecialtyId, setSelectedSpecialtyId] = useState(
         formData.specialty_id || preselectedDoctor?.specialties?.[0]?.id || ''
     );
@@ -9,10 +9,19 @@ export default function StepSpecialty({ specialties, formData, onNext, preselect
     const [loadingDoctors, setLoadingDoctors] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
 
+    useEffect(() => {
+        if (preselectedDoctor && preselectedDoctor.specialties?.length > 0) {
+            const specialtyId = preselectedDoctor.specialties[0].id;
+            // La carga ya se dispara por el useEffect principal si selectedSpecialtyId coincide
+            // Solo aseguramos que availableDoctors se llene
+        }
+    }, [preselectedDoctor]);
+
     // Cargar médicos cuando cambia la especialidad
     useEffect(() => {
         if (!selectedSpecialtyId) {
             setDoctors([]);
+            if (onDoctorsLoaded) onDoctorsLoaded([]);
             return;
         }
 
@@ -21,8 +30,12 @@ export default function StepSpecialty({ specialties, formData, onNext, preselect
             .then((res) => res.json())
             .then((data) => {
                 setDoctors(data.doctors || []);
+                if (onDoctorsLoaded) onDoctorsLoaded(data.doctors || []);
             })
-            .catch(() => setDoctors([]))
+            .catch(() => {
+                setDoctors([]);
+                if (onDoctorsLoaded) onDoctorsLoaded([]); // NUEVO
+            })
             .finally(() => setLoadingDoctors(false));
     }, [selectedSpecialtyId]);
 
@@ -80,11 +93,10 @@ export default function StepSpecialty({ specialties, formData, onNext, preselect
                                 setSelectedSpecialtyId(specialty.id);
                                 setSelectedDoctorId('');
                             }}
-                            className={`text-left px-4 py-3 rounded-lg border transition-all ${
-                                selectedSpecialtyId === specialty.id
-                                    ? 'border-primary-600 bg-primary-50 ring-2 ring-primary-200'
-                                    : 'border-gray-200 hover:border-primary-300 hover:bg-gray-50'
-                            }`}
+                            className={`text-left px-4 py-3 rounded-lg border transition-all ${selectedSpecialtyId === specialty.id
+                                ? 'border-primary-600 bg-primary-50 ring-2 ring-primary-200'
+                                : 'border-gray-200 hover:border-primary-300 hover:bg-gray-50'
+                                }`}
                         >
                             <div className="font-medium text-sm text-gray-900">{specialty.name}</div>
                         </button>
@@ -116,11 +128,10 @@ export default function StepSpecialty({ specialties, formData, onNext, preselect
                             <button
                                 type="button"
                                 onClick={() => setSelectedDoctorId('')}
-                                className={`w-full text-left px-4 py-3 rounded-lg border transition-all ${
-                                    selectedDoctorId === ''
-                                        ? 'border-primary-600 bg-primary-50 ring-2 ring-primary-200'
-                                        : 'border-gray-200 hover:border-primary-300 hover:bg-gray-50'
-                                }`}
+                                className={`w-full text-left px-4 py-3 rounded-lg border transition-all ${selectedDoctorId === ''
+                                    ? 'border-primary-600 bg-primary-50 ring-2 ring-primary-200'
+                                    : 'border-gray-200 hover:border-primary-300 hover:bg-gray-50'
+                                    }`}
                             >
                                 <div className="font-medium text-sm text-gray-900">
                                     Cualquier médico disponible
@@ -134,11 +145,10 @@ export default function StepSpecialty({ specialties, formData, onNext, preselect
                                     key={doctor.id}
                                     type="button"
                                     onClick={() => setSelectedDoctorId(doctor.id)}
-                                    className={`w-full text-left px-4 py-3 rounded-lg border transition-all flex items-center ${
-                                        selectedDoctorId === doctor.id
-                                            ? 'border-primary-600 bg-primary-50 ring-2 ring-primary-200'
-                                            : 'border-gray-200 hover:border-primary-300 hover:bg-gray-50'
-                                    }`}
+                                    className={`w-full text-left px-4 py-3 rounded-lg border transition-all flex items-center ${selectedDoctorId === doctor.id
+                                        ? 'border-primary-600 bg-primary-50 ring-2 ring-primary-200'
+                                        : 'border-gray-200 hover:border-primary-300 hover:bg-gray-50'
+                                        }`}
                                 >
                                     <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 shrink-0 mr-3">
                                         <img

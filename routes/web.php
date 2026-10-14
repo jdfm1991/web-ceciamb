@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\PatientAuthController;
 use App\Http\Controllers\Patient\DashboardController;
 use App\Http\Controllers\Patient\AppointmentController as PatientAppointmentController;
 use App\Http\Controllers\Patient\ProfileController;
+use App\Http\Controllers\Public\AboutController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -64,3 +65,5 @@ Route::middleware(['auth', 'patient'])->prefix('mi-cuenta')->name('patient.')->g
     Route::post('/perfil', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/perfil/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 });
+
+Route::get('/sobre-nosotros', [AboutController::class, 'index'])->name('about');
