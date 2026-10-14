@@ -25,11 +25,13 @@ class Appointment extends Model
         'parent_appointment_id',
         'expires_at',
         'internal_notes',
+        'reminder_sent_at',
     ];
 
     protected $casts = [
         'requested_date' => 'date',
         'expires_at' => 'datetime',
+        'reminder_sent_at' => 'datetime',
     ];
 
     /**
