@@ -7,6 +7,9 @@ use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\ServiceController;
 use App\Http\Controllers\Public\SpecialtyController;
 use App\Http\Controllers\Auth\PatientAuthController;
+use App\Http\Controllers\Patient\DashboardController;
+use App\Http\Controllers\Patient\AppointmentController as PatientAppointmentController;
+use App\Http\Controllers\Patient\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -49,3 +52,15 @@ Route::get('/activacion-pendiente', [PatientAuthController::class, 'pending'])->
 
 // Logout (requiere auth)
 Route::post('/logout', [PatientAuthController::class, 'logout'])->middleware('auth')->name('logout');
+
+Route::middleware(['auth', 'patient'])->prefix('mi-cuenta')->name('patient.')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/citas', [PatientAppointmentController::class, 'index'])->name('appointments.index');
+    Route::get('/citas/{appointment}', [PatientAppointmentController::class, 'show'])->name('appointments.show');
+    Route::post('/citas/{appointment}/cancelar', [PatientAppointmentController::class, 'cancel'])->name('appointments.cancel');
+
+    Route::get('/perfil', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/perfil', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/perfil/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+});
