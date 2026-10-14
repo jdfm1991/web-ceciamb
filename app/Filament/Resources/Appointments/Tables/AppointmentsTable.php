@@ -21,6 +21,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Mail;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AppointmentsTable
 {
@@ -269,10 +270,76 @@ class AppointmentsTable
                     ->visible(fn(Appointment $record): bool => $record->status === 'pendiente'),
             ])
             ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+                Action::make('export')
+                    ->label('Exportar a CSV')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->action(function ($livewire): StreamedResponse {
+                        return self::exportToCsv($livewire);
+                    }),
             ])
             ->defaultSort('requested_date', 'asc');
+    }
+
+    /**
+     * Exporta las citas filtradas a CSV.
+     */
+    protected static function exportToCsv($livewire): StreamedResponse
+    {
+        // Obtener la query con los filtros aplicados
+        $query = $livewire->getFilteredTableQuery();
+
+        // Cargar relaciones para evitar N+1
+        $appointments = $query
+            ->with(['doctor:id,name', 'specialty:id,name'])
+            ->orderBy('requested_date', 'desc')
+            ->orderBy('requested_time', 'desc')
+            ->get();
+
+        $filename = 'citas_' . now()->format('Y-m-d_His') . '.csv';
+
+        return response()->streamDownload(function () use ($appointments) {
+            $handle = fopen('php://output', 'w');
+
+            // BOM para UTF-8 (Excel lo reconoce)
+            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            // Cabeceras
+            fputcsv($handle, [
+                'Referencia',
+                'Paciente',
+                'Email',
+                'Teléfono',
+                'Médico',
+                'Especialidad',
+                'Fecha',
+                'Hora',
+                'Estado',
+                'Solicitada el',
+                'Notas internas',
+            ]);
+
+            // Filas
+            foreach ($appointments as $appointment) {
+                fputcsv($handle, [
+                    'CITA-' . str_pad($appointment->id, 6, '0', STR_PAD_LEFT),
+                    $appointment->patient_name,
+                    $appointment->patient_email,
+                    $appointment->patient_phone,
+                    $appointment->doctor?->name ?? 'Sin asignar',
+                    $appointment->specialty?->name ?? 'Sin asignar',
+                    $appointment->requested_date?->format('d/m/Y') ?? '',
+                    $appointment->requested_time ? substr($appointment->requested_time, 0, 5) : '',
+                    \App\Models\Appointment::STATUSES[$appointment->status] ?? $appointment->status,
+                    $appointment->created_at?->format('d/m/Y H:i') ?? '',
+                    $appointment->internal_notes ?? '',
+                ]);
+            }
+
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
     }
 }
