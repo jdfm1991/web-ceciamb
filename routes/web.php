@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Public\AppointmentController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\DoctorController;
 use App\Http\Controllers\Public\HomeController;
@@ -25,3 +26,6 @@ Route::get('/medicos/{doctor:slug}', [DoctorController::class, 'show'])->name('d
 Route::get('/servicios', [ServiceController::class, 'index'])->name('services.index');
 Route::get('/contacto', [ContactController::class, 'index'])->name('contact.index');
 Route::post('/contacto', [ContactController::class, 'store'])->name('contact.store');
+Route::get('/citas', [AppointmentController::class, 'create'])->name('appointments.create');
+Route::post('/citas', [AppointmentController::class, 'store'])->name('appointments.store');
+Route::get('/citas/{appointment}/exito', [AppointmentController::class, 'success'])->name('appointments.success');
