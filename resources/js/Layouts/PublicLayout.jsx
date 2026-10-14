@@ -2,7 +2,7 @@ import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 export default function PublicLayout({ children }) {
-    const { clinicInfo } = usePage().props;
+    const { clinicInfo, auth } = usePage().props;
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const navigation = [
@@ -45,8 +45,8 @@ export default function PublicLayout({ children }) {
                                     key={item.name}
                                     href={item.href}
                                     className={`text-sm font-medium transition-colors ${isActive(item.href)
-                                            ? 'text-primary-600 border-b-2 border-primary-600'
-                                            : 'text-gray-700 hover:text-primary-600'
+                                        ? 'text-primary-600 border-b-2 border-primary-600'
+                                        : 'text-gray-700 hover:text-primary-600'
                                         }`}
                                 >
                                     {item.name}
@@ -58,6 +58,28 @@ export default function PublicLayout({ children }) {
                             >
                                 Solicitar Cita
                             </Link>
+                            {auth?.user ? (
+                                <div className="relative group">
+                                    <button className="flex items-center space-x-2 text-sm font-medium text-gray-700 hover:text-primary-600">
+                                        <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 font-semibold text-xs">
+                                            {auth.user.name.charAt(0).toUpperCase()}
+                                        </div>
+                                        <span>{auth.user.name.split(' ')[0]}</span>
+                                    </button>
+                                    <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                                        <Link href="/mi-cuenta" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg">
+                                            Mi cuenta
+                                        </Link>
+                                        <Link href="/logout" method="post" as="button" className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-b-lg">
+                                            Cerrar sesión
+                                        </Link>
+                                    </div>
+                                </div>
+                            ) : (
+                                <Link href="/login" className="text-sm font-medium text-gray-700 hover:text-primary-600">
+                                    Iniciar sesión
+                                </Link>
+                            )}
                         </nav>
 
                         {/* Botón menú móvil */}
@@ -84,8 +106,8 @@ export default function PublicLayout({ children }) {
                                     key={item.name}
                                     href={item.href}
                                     className={`block py-2 px-3 rounded-lg text-base font-medium ${isActive(item.href)
-                                            ? 'bg-primary-50 text-primary-700'
-                                            : 'text-gray-700 hover:bg-gray-50'
+                                        ? 'bg-primary-50 text-primary-700'
+                                        : 'text-gray-700 hover:bg-gray-50'
                                         }`}
                                     onClick={() => setMobileMenuOpen(false)}
                                 >
@@ -99,6 +121,20 @@ export default function PublicLayout({ children }) {
                             >
                                 Solicitar Cita
                             </Link>
+                            {auth?.user ? (
+                                <>
+                                    <Link href="/mi-cuenta" className="block py-2 px-3 rounded-lg text-base font-medium text-gray-700 hover:bg-gray-50" onClick={() => setMobileMenuOpen(false)}>
+                                        Mi cuenta
+                                    </Link>
+                                    <Link href="/logout" method="post" as="button" className="block w-full text-left py-2 px-3 rounded-lg text-base font-medium text-red-600 hover:bg-red-50" onClick={() => setMobileMenuOpen(false)}>
+                                        Cerrar sesión
+                                    </Link>
+                                </>
+                            ) : (
+                                <Link href="/login" className="block py-2 px-3 rounded-lg text-base font-medium text-gray-700 hover:bg-gray-50" onClick={() => setMobileMenuOpen(false)}>
+                                    Iniciar sesión
+                                </Link>
+                            )}
                         </nav>
                     )}
                 </div>

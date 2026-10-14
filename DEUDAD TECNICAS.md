@@ -46,3 +46,18 @@
 | **Solución propuesta**                  | Pasar los médicos cargados del paso 1 al estado del wizard, o exponer una función auxiliar que busque el médico por ID desde una lista global.|
 | **Bloquea MVP**                         | No.                                                  |
 | **Retomar en**                          | Sub-fase 4.11 (Optimización) o Fase 6 (Testing).     |
+
+
+### Deuda Técnica #002 — Envío de correo SMTP ✅ RESUELTA
+
+| Campo                                   | Detalle                                              |
+|-----------------------------------------|------------------------------------------------------|
+| **ID**                                  | DT-002                                               |
+| **Sub-fase origen**                     | 4.7 — Formulario de Contacto                         |
+| **Descubierta en**                      | Fase 4, Sub-fase 4.7                                 |
+| **Prioridad**                           | Media                                                |
+| **Estado**                              | ✅ RESUELTA |
+| **Fecha de resolución**                 | 14-10-2026 |
+| **Solución aplicadaP**                  | 1. Reubicar el archivo cacert.pem en una ruta correcta (C:\php\extras\ssl\cacert.pem). 2. Actualizar php.ini con curl.cainfo y openssl.cafile apuntando a esa ruta. 3. Reiniciar Apache. 4. Verificar que la configuración SMTP del hosting funciona con MAIL_MAILER=smtp. 5. Probar envíos reales desde contacto y registro.|
+| **Verificación**                        | Los correos llegan a la bandeja de entrada real del destinatario. El formulario de contacto muestra el mensaje de éxito. El registro envía el correo de activación al paciente.|
+| **Impacto en el proyecto**              | Ahora el MVP tiene un canal de correo funcional. Los pacientes pueden activar sus cuentas y recepción recibe los mensajes de contacto.|
