@@ -16,7 +16,12 @@ class AppointmentObserver
      */
     public function created(Appointment $appointment): void
     {
-        // Notificar a recepción
+        // Si es un reagendamiento, no notificar a recepción con "nueva solicitud"
+        // La notificación al paciente ya se maneja desde la acción de reagendar
+        if ($appointment->parent_appointment_id !== null) {
+            return;
+        }
+
         $recipient = ClinicInfo::getValue('email', config('mail.from.address'));
 
         try {
