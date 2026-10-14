@@ -30,9 +30,6 @@ class PatientAuthController extends Controller
      */
     public function register(RegisterPatientRequest $request): RedirectResponse
     {
-        \Log::info('=== Registro iniciado ===');
-        \Log::info('Datos validados:', $request->validated());
-
         $validated = $request->validated();
 
         try {
@@ -47,11 +44,7 @@ class PatientAuthController extends Controller
                 'email_verified_at' => null,
             ]);
 
-            \Log::info('Usuario creado:', ['id' => $user->id, 'email' => $user->email]);
-
             $this->sendActivationEmail($user);
-
-            \Log::info('Correo enviado');
 
             return redirect()
                 ->route('activation.pending', ['email' => $user->email])
