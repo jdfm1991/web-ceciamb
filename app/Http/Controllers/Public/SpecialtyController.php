@@ -13,7 +13,13 @@ class SpecialtyController extends Controller
     {
         $specialties = Specialty::active()
             ->withCount('doctors')
-            ->orderByRaw("FIELD(category, 'medica', 'subespecialidad', 'profesion_salud', 'tecnica')")
+            ->orderByRaw("CASE category 
+                            WHEN 'medica' THEN 1 
+                                WHEN 'subespecialidad' THEN 2 
+                                WHEN 'profesion_salud' THEN 3 
+                                WHEN 'tecnica' THEN 4 
+                                ELSE 5 
+                            END")
             ->orderBy('name')
             ->get(['id', 'name', 'slug', 'description', 'category']);
 

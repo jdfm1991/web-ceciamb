@@ -27,9 +27,16 @@ class AppointmentController extends Controller
     public function create(Request $request): Response
     {
         $specialties = Specialty::active()
-            ->orderByRaw("FIELD(category, 'medica', 'subespecialidad', 'profesion_salud', 'tecnica')")
+            ->withCount('doctors')
+            ->orderByRaw("CASE category 
+                                WHEN 'medica' THEN 1 
+                                WHEN 'subespecialidad' THEN 2 
+                                WHEN 'profesion_salud' THEN 3 
+                                WHEN 'tecnica' THEN 4 
+                                ELSE 5 
+                            END")
             ->orderBy('name')
-            ->get(['id', 'name', 'slug', 'category']);
+            ->get(['id', 'name', 'slug', 'description', 'category']);
 
         $preselectedDoctor = null;
         if ($doctorSlug = $request->query('doctor')) {

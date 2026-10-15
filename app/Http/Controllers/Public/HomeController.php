@@ -19,10 +19,16 @@ class HomeController extends Controller
             ->get(['id', 'name', 'slug', 'description', 'image']);
 
         $specialties = Specialty::active()
-            ->orderByRaw("FIELD(category, 'medica', 'subespecialidad', 'profesion_salud', 'tecnica')")
-            ->orderBy('name')
-            ->limit(12)
-            ->get(['id', 'name', 'slug', 'category']);
+    ->withCount('doctors')
+    ->orderByRaw("CASE category 
+                        WHEN 'medica' THEN 1 
+                        WHEN 'subespecialidad' THEN 2 
+                        WHEN 'profesion_salud' THEN 3 
+                        WHEN 'tecnica' THEN 4 
+                        ELSE 5 
+                    END")
+                    ->orderBy('name')
+                    ->get(['id', 'name', 'slug', 'description', 'category']);
 
         $doctors = Doctor::active()
             ->with('specialties:id,name')
