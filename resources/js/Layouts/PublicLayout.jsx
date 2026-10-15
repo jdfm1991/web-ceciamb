@@ -214,7 +214,7 @@ export default function PublicLayout({ children }) {
                             <p className="text-gray-400 text-sm leading-relaxed">
                                 {clinicInfo?.slogan}
                             </p>
-                            <p className="text-gray-400 text-sm mt-4">
+                            <p className="text-gray-300 text-sm mt-4">
                                 RIF: {clinicInfo?.rif}
                             </p>
                         </div>
@@ -252,8 +252,19 @@ export default function PublicLayout({ children }) {
                         </div>
                     </div>
 
-                    <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-500">
+                    <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-300">
                         <p>&copy; {new Date().getFullYear()} {clinicInfo?.name || 'Ceciamb'}. Todos los derechos reservados.</p>
+                        <p className="mt-2">
+                            Desarrollado por{' '}
+                            <a
+                                href="https://jumpdaedalus.com/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-primary-400 hover:text-primary-300 underline"
+                            >
+                                Jump Daedalus
+                            </a>
+                        </p>
                     </div>
                 </div>
             </footer>
